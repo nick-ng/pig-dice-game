@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Pig Dice Game Tester</title>
+  <script src="https://unpkg.com/vue@3"></script>
+  <style>
+    button {
+      font-size: 28px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <button @click="newGame()">New Game</button>
+    <pre>{{ gameData }}</pre>
+  </div>
+</body>
+
+<script>
+  (() => {
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          gameData: {}
+        }
+      },
+      methods: {
+        newGame() {
+          (async () => {
+            const res = await fetch("/game", {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+              },
+              body: JSON.stringify({
+                playerId: "d48147b1-8af0-4fba-b089-7cd358fd6005",
+                playerName: "Test Player",
+                playerPassword: "158dc9e8-dcb5-415c-a5a8-b74e283d080b",
+              })
+            })
+
+            const resJson = await res.json();
+            this.gameData = resJson
+          })()
+
+        }
+      },
+      mounted() { },
+      unmounted() { }
+    }).mount('#app')
+  })()
+</script>
+
+</html>

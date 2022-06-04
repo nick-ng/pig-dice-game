@@ -55,7 +55,7 @@ export default class Game {
     this.gameState = temp.gameState;
   }
 
-  getGameData() {
+  getGameData = () => {
     return {
       id: this.id,
       host: this.host,
@@ -65,9 +65,9 @@ export default class Game {
       gameSecrets: this.gameSecrets,
       gameState: this.gameState,
     };
-  }
+  };
 
-  getGameDataForPlayer(playerId: string, playerPassword: string) {
+  getGameDataForPlayer = (playerId: string, playerPassword: string) => {
     if (
       !playerPassword ||
       this.gameSecrets[playerId].password !== playerPassword
@@ -87,10 +87,14 @@ export default class Game {
       gameSecrets: this.gameSecrets[playerId],
       gameState: this.gameState,
     };
-  }
+  };
 
   // Game lobby stuff
-  addPlayer(playerId: string, playerName: string, playerPassword: string) {
+  addPlayer = (
+    playerId: string,
+    playerName: string,
+    playerPassword: string
+  ) => {
     if (this.gameState.state !== "lobby") {
       return {
         type: "error",
@@ -123,15 +127,19 @@ export default class Game {
       id: playerId,
       name: playerName,
     });
-    this.gameSecrets[playerId].password = playerPassword;
+    this.gameSecrets[playerId] = { password: playerPassword };
 
     return {
       type: "success",
     };
-  }
+  };
 
   // Game play stuff
-  gameAction(playerId: string, playerPassword: string, action: InputAction) {
+  gameAction = (
+    playerId: string,
+    playerPassword: string,
+    action: InputAction
+  ) => {
     if (this.players.filter((a) => a.id === playerId).length === 0) {
       return {
         type: "error",
@@ -155,5 +163,5 @@ export default class Game {
     this.gameSecrets = newSecrets;
 
     return message;
-  }
+  };
 }

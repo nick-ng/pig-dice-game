@@ -2,9 +2,9 @@
   "name": "pig-dice-game",
   "version": "1.0.0",
   "description": "Pig is a simple dice game first described in print in John Scarne in 1945. Players take turns to roll a single dice as many times as they wish, adding all roll results to a running total, but losing their gained score for the turn if they roll a 1.",
-  "main": "index.js",
+  "main": "./src-back/main.ts",
   "scripts": {
-    "start": "ts-node ./src-back/main.ts",
+    "start": "NODE_ENV=dev nodemon ./src-back/main.ts",
     "serve": "node ./dist-back/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/nick-ng/pig-dice-game#readme",
   "dependencies": {
+    "compression": "^1.7.4",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "redis": "^4.1.0",
@@ -29,10 +30,21 @@
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
+    "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.39",
     "@types/uuid": "^8.3.4",
     "nodemon": "^2.0.16",
     "ts-node": "^10.8.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "src-front/*",
+      "dist/*",
+      "dist-back/*",
+      "dist-front/*",
+      "static/*"
+    ],
+    "delay": 3000
   }
 }
