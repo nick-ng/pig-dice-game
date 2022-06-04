@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  redis-pig-dice-game:
+    image: redis:5.0.5-alpine
+    restart: always
+    ports:
+      - '5052:6379'
+    volumes:
+      - redis-data-pig-dice-game:/data
+
+volumes:
+  redis-data-pig-dice-game:
