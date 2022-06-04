@@ -14,11 +14,11 @@ app.set("port", port);
 app.use(express.json());
 
 // serve static files
-app.use(express.static("dist"));
+app.use(express.static("dist-front"));
 
 // redirect all other requests to index.html
-app.use((req, res) => {
-  res.sendFile(path.resolve(process.cwd(), "dist", "index.html"));
+app.use((_req, res) => {
+  res.sendFile(path.resolve(process.cwd(), "dist-front", "index.html"));
 });
 
 // starting listening

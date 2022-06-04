@@ -1,5 +1,8 @@
-const startGame = (gameObject, action) => {
-  const { gameState, gameSecrets, players, host } = gameObject;
+import { GameData, Scores } from "./game-types";
+import { GameAction } from "./game-action-types";
+
+const startGame = (gameData: GameData, action: GameAction) => {
+  const { gameState, gameSecrets, players, host } = gameData;
   if (gameState.state !== "lobby") {
     return {
       newState: gameState,
@@ -21,7 +24,7 @@ const startGame = (gameObject, action) => {
     .sort((a, b) => a.sortKey - b.sortKey)
     .map((a) => a.id);
 
-  const scores = {};
+  const scores: Scores = {};
   turnOrder.forEach((playerId) => {
     scores[playerId] = 0;
   });
@@ -39,24 +42,24 @@ const startGame = (gameObject, action) => {
   };
 };
 
-const actionA = (gameObject, action) => {
+const exampleAction = (gameData: GameData, action: GameAction) => {
   return {
-    newState: gameObject.gameState,
-    newSecrets: gameObject.gameSecrets,
+    newState: gameData.gameState,
+    newSecrets: gameData.gameSecrets,
     message: "OK",
   };
 };
 
-export const performAction = (gameObject, action) => {
+export const performAction = (gameData: GameData, action: GameAction) => {
   switch (action.type) {
     case "start":
-      return startGame(initialState, initialSecrets, action);
-    case "a":
-      return actionA(initialState, initialSecrets, action);
+      return startGame(gameData, action);
+    case "example":
+      return exampleAction(gameData, action);
     default:
       return {
-        newState: gameObject.gameState,
-        newSecrets: gameObject.gameSecrets,
+        newState: gameData.gameState,
+        newSecrets: gameData.gameSecrets,
         message: "No action",
       };
   }

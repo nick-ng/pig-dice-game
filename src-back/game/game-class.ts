@@ -1,6 +1,14 @@
 import { v4 as uuid } from "uuid";
 
-import { performAction } from "./game-actions.js";
+import {
+  Players,
+  InitObject,
+  GameSettings,
+  GameSecrets,
+  GameState,
+} from "./game-types";
+import { performAction } from "./game-actions";
+import { InputAction } from "./game-action-types";
 
 const defaultGame = {
   maxPlayers: 2,
@@ -13,9 +21,17 @@ const defaultGame = {
 };
 
 export default class Game {
-  constructor(initial = {}) {
+  id: string;
+  host: string;
+  maxPlayers: number;
+  players: Players;
+  gameSettings: GameSettings;
+  gameSecrets: GameSecrets;
+  gameState: GameState;
+
+  constructor(initial: InitObject) {
     if (!initial.host) {
-      return {
+      throw {
         type: "error",
         message:
           "Game needs a host. Initiate with at least { host: hostPlayerId }",
@@ -39,7 +55,7 @@ export default class Game {
     this.gameState = temp.gameState;
   }
 
-  getGameObject() {
+  getGameData() {
     return {
       id: this.id,
       host: this.host,
@@ -51,7 +67,7 @@ export default class Game {
     };
   }
 
-  getGameObjectForPlayer(playerId, playerPassword) {
+  getGameDataForPlayer(playerId: string, playerPassword: string) {
     if (
       !playerPassword ||
       this.gameSecrets[playerId].password !== playerPassword
@@ -74,7 +90,7 @@ export default class Game {
   }
 
   // Game lobby stuff
-  addPlayer(playerId, playerName, playerPassword) {
+  addPlayer(playerId: string, playerName: string, playerPassword: string) {
     if (this.gameState.state !== "lobby") {
       return {
         type: "error",
@@ -82,7 +98,7 @@ export default class Game {
       };
     }
 
-    if (this.game.players.length >= this.game.maxPlayers) {
+    if (this.players.length >= this.maxPlayers) {
       return {
         type: "error",
         message: "Can't add more players.",
@@ -96,18 +112,18 @@ export default class Game {
       };
     }
 
-    if (this.game.players.filter((a) => a.id === playerId).length > 0) {
+    if (this.players.filter((a) => a.id === playerId).length > 0) {
       return {
         type: "error",
         message: "Player already in the game",
       };
     }
 
-    this.game.players.push({
+    this.players.push({
       id: playerId,
       name: playerName,
     });
-    this.game.gameSecrets[playerId].password = playerPassword;
+    this.gameSecrets[playerId].password = playerPassword;
 
     return {
       type: "success",
@@ -115,7 +131,7 @@ export default class Game {
   }
 
   // Game play stuff
-  gameAction(playerId, playerPassword, action) {
+  gameAction(playerId: string, playerPassword: string, action: InputAction) {
     if (this.players.filter((a) => a.id === playerId).length === 0) {
       return {
         type: "error",
@@ -131,7 +147,7 @@ export default class Game {
     }
 
     const { newState, newSecrets, message } = performAction(
-      this.getGameObject(),
+      this.getGameData(),
       { ...action, playerId }
     );
 
