@@ -1,7 +1,7 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "lib": ["DOM"],
+    "lib": ["DOM", "es2021"],
     "outDir": "./dist-front",
     "jsx": "react"
   }
