@@ -24,11 +24,15 @@ if (process.env.NODE_ENV === "dev") {
 app.use(compression());
 app.use(express.json());
 
-app.use("/game", gameRouter);
+app.use("/api/game", gameRouter);
 
 // serve static files
 app.use(express.static(path.resolve(process.cwd(), "dist-front")));
 app.use(express.static(path.resolve(process.cwd(), "static")));
+
+if (process.env.NODE_ENV === "dev") {
+  app.use(express.static(path.resolve(process.cwd(), "dev-tools")));
+}
 
 // redirect all other requests to index.html
 app.use((_req, res) => {

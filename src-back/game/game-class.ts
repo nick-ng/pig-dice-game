@@ -10,16 +10,6 @@ import {
 import { performAction } from "./game-actions";
 import { InputAction } from "./game-action-types";
 
-const defaultGame = {
-  maxPlayers: 2,
-  players: [],
-  gameSettings: {},
-  gameSecrets: {},
-  gameState: {
-    state: "lobby",
-  },
-};
-
 export default class Game {
   id: string;
   host: string;
@@ -38,7 +28,16 @@ export default class Game {
       };
     }
 
-    const temp = { ...defaultGame, ...initial };
+    const temp = {
+      maxPlayers: 2,
+      players: [],
+      gameSettings: {},
+      gameSecrets: {},
+      gameState: {
+        state: "lobby",
+      },
+      ...initial,
+    };
 
     if (!temp.id) {
       this.id = uuid();
@@ -69,6 +68,7 @@ export default class Game {
 
   getGameDataForPlayer = (playerId: string, playerPassword: string) => {
     if (
+      !this.gameSecrets[playerId] ||
       !playerPassword ||
       this.gameSecrets[playerId].password !== playerPassword
     ) {
@@ -102,13 +102,6 @@ export default class Game {
       };
     }
 
-    if (this.players.length >= this.maxPlayers) {
-      return {
-        type: "error",
-        message: "Can't add more players.",
-      };
-    }
-
     if (!playerPassword) {
       return {
         type: "error",
@@ -120,6 +113,13 @@ export default class Game {
       return {
         type: "error",
         message: "Player already in the game",
+      };
+    }
+
+    if (this.players.length >= this.maxPlayers) {
+      return {
+        type: "error",
+        message: "Can't add more players.",
       };
     }
 
@@ -162,6 +162,9 @@ export default class Game {
     this.gameState = newState;
     this.gameSecrets = newSecrets;
 
-    return message;
+    return {
+      type: "success",
+      message,
+    };
   };
 }
