@@ -10,6 +10,13 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 4. Navigate to one of the following:
    - http://localhost:3232/test.html
 
+## ToDos
+
+- ~~Make basic game functions in backend~~
+- Use Redis to store game state
+- Make frontend game lobby
+- Make frontend game play
+
 ## Notes
 
 On the server
