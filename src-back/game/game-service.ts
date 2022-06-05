@@ -1,6 +1,5 @@
 import Game from "./game-class";
-
-let allGames: Game[] = [];
+import { saveGame, findGame } from "./game-redis";
 
 export const newGame = async (
   playerId: string,
@@ -9,10 +8,8 @@ export const newGame = async (
 ) => {
   const game = new Game({ host: playerId });
   game.addPlayer(playerId, playerName, playerPassword);
-  allGames.push(game);
 
-  // 10. Save game on Redis with 1 hour ttl
-  // console.debug("gameData", game.getGameData());
+  saveGame(game.getGameData());
 
   return {
     code: 200,
@@ -26,12 +23,9 @@ export const joinGame = async (
   playerName: string,
   playerPassword: string
 ) => {
-  const game = allGames.find((a) => a.id === gameId);
+  const game = await findGame(gameId);
 
   if (!game) {
-    // 10. try and get the game from Redis
-
-    // 15. if you still can't find the game, return 404
     return { code: 404 };
   }
 
@@ -42,8 +36,8 @@ export const joinGame = async (
       message: result.message,
     };
   }
-  // 30. Save game to Redis with new 1 hour ttl
-  // console.debug("gameData1", game.getGameData());
+
+  saveGame(game.getGameData());
 
   return {
     code: 200,
@@ -58,7 +52,7 @@ export const playGame = async (
   action: string,
   payload: any
 ) => {
-  const game = allGames.find((a) => a.id === gameId);
+  const game = await findGame(gameId);
 
   if (!game) {
     return { code: 404 };
@@ -76,8 +70,7 @@ export const playGame = async (
     };
   }
 
-  // 20. Save game to Redis with new 36 hour ttl
-  console.debug("gameData", game.getGameData());
+  saveGame(game.getGameData(), true);
 
   return {
     code: 200,
@@ -91,12 +84,9 @@ export const getGame = async (
   playerId: string,
   playerPassword: string
 ) => {
-  const game = allGames.find((a) => a.id === gameId);
+  const game = await findGame(gameId);
 
   if (!game) {
-    // 10. try and get the game from Redis
-
-    // 15. if you still can't find the game, return 404
     return { code: 404 };
   }
 

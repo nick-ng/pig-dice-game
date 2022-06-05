@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import compression from "compression";
 import path from "path";
 import http from "http";
 
 import gameRouter from "./game/game-router";
-
-dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
