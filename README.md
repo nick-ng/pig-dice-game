@@ -7,6 +7,8 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 1. `npm install`
 2. `docker-compose up -d` - For local redis environment
 3. `npm start`
+4. Navigate to one of the following:
+   - http://localhost:3232/test.html
 
 ## Notes
 
