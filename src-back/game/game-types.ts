@@ -2,12 +2,26 @@ export interface Scores {
   [index: string]: number;
 }
 
-export interface GameState {
-  state: "lobby" | string;
-  activePlayer?: string;
-  turnOrder?: string[];
-  score?: Scores;
+export interface LobbyGameState {
+  state: "lobby";
 }
+
+export interface MainGameState {
+  state: "main";
+  activePlayer: string;
+  turnOrder: string[];
+  scores: Scores;
+  turnScore: number;
+  lastRoll?: number;
+}
+
+export interface OverGameState {
+  state: "over";
+  turnOrder: string[];
+  scores: Scores;
+}
+
+export type GameState = LobbyGameState | MainGameState | OverGameState;
 
 export interface GameSecret {
   password: string;
@@ -19,7 +33,10 @@ export interface GameSecrets {
 }
 
 export interface GameSettings {
-  [key: string]: string | number;
+  targetScore: number;
+  diceSize: number;
+  diceCount: number;
+  pigNumber: number;
 }
 
 interface Player {
@@ -57,4 +74,10 @@ export interface InitObject {
   gameSettings?: GameSettings;
   gameSecrets?: GameSecrets;
   gameState?: GameState;
+}
+
+export interface ActionReturn {
+  newState: GameState;
+  newSecrets: GameSecrets;
+  message: string;
 }

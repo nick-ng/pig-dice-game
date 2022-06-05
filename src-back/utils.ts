@@ -4,3 +4,13 @@ export const sleep = (ms: number) =>
       resolve(null);
     }, ms);
   });
+
+export const nextPlayer = (turnOrder: string[], activePlayer: string) => {
+  const nextIndex =
+    turnOrder.findIndex((player) => player === activePlayer) + 1;
+  if (nextIndex >= turnOrder.length) {
+    return turnOrder[0];
+  }
+
+  return turnOrder[nextIndex];
+};

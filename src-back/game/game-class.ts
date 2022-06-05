@@ -6,6 +6,7 @@ import {
   GameSettings,
   GameSecrets,
   GameState,
+  LobbyGameState,
 } from "./game-types";
 import { performAction } from "./game-actions";
 import { InputAction } from "./game-action-types";
@@ -28,14 +29,21 @@ export default class Game {
       };
     }
 
+    const defaultGameState: LobbyGameState = {
+      state: "lobby",
+    };
+
     const temp = {
       maxPlayers: 2,
       players: [],
-      gameSettings: {},
-      gameSecrets: {},
-      gameState: {
-        state: "lobby",
+      gameSettings: {
+        targetScore: 100,
+        diceSize: 6,
+        diceCount: 1,
+        pigNumber: 1,
       },
+      gameSecrets: {},
+      gameState: defaultGameState,
       ...initial,
     };
 

@@ -1,7 +1,8 @@
-import { GameData, Scores } from "./game-types";
+import { GameData, Scores, ActionReturn } from "./game-types";
 import { GameAction } from "./game-action-types";
+import { nextPlayer } from "../utils";
 
-const startGame = (gameData: GameData, action: GameAction) => {
+const startGame = (gameData: GameData, action: GameAction): ActionReturn => {
   const { gameState, gameSecrets, players, host } = gameData;
   if (gameState.state !== "lobby") {
     return {
@@ -36,26 +37,120 @@ const startGame = (gameData: GameData, action: GameAction) => {
       activePlayer: turnOrder[0],
       turnOrder,
       scores,
+      turnScore: 0,
     },
     newSecrets: gameSecrets,
     message: "OK",
   };
 };
 
-const exampleAction = (gameData: GameData, action: GameAction) => {
+const rollDice = (gameData: GameData, action: GameAction): ActionReturn => {
+  const { gameSettings, gameState, gameSecrets } = gameData;
+  if (gameState.state !== "main") {
+    return {
+      newState: gameState,
+      newSecrets: gameSecrets,
+      message: "Game not in progress.",
+    };
+  }
+  if (action.playerId !== gameState.activePlayer) {
+    return {
+      newState: gameState,
+      newSecrets: gameSecrets,
+      message: "Not your turn.",
+    };
+  }
+
+  let turnScore = gameState.turnScore;
+
+  const { diceSize, diceCount, pigNumber } = gameSettings;
+
+  let roll = 0;
+
+  for (let n = 0; n < diceCount; n++) {
+    roll += Math.floor(Math.random() * diceSize) + 1;
+  }
+
+  if (roll === pigNumber) {
+    return {
+      newState: {
+        ...gameState,
+        activePlayer: nextPlayer(gameState.turnOrder, gameState.activePlayer),
+        turnScore: 0,
+        lastRoll: roll,
+      },
+      newSecrets: gameSecrets,
+      message: "OK",
+    };
+  }
+
+  turnScore += roll;
+
   return {
-    newState: gameData.gameState,
+    newState: { ...gameState, turnScore, lastRoll: roll },
     newSecrets: gameData.gameSecrets,
     message: "OK",
   };
 };
 
-export const performAction = (gameData: GameData, action: GameAction) => {
+const bankPoints = (gameData: GameData, action: GameAction): ActionReturn => {
+  const { gameSettings, gameState, gameSecrets } = gameData;
+  if (gameState.state !== "main") {
+    return {
+      newState: gameState,
+      newSecrets: gameSecrets,
+      message: "Game not in progress.",
+    };
+  }
+  if (action.playerId !== gameState.activePlayer) {
+    return {
+      newState: gameState,
+      newSecrets: gameSecrets,
+      message: "Not your turn.",
+    };
+  }
+
+  const { playerId } = action;
+
+  const { scores, turnScore, turnOrder, activePlayer } = gameState;
+
+  scores[playerId] += turnScore;
+
+  if (scores[playerId] >= gameSettings.targetScore) {
+    return {
+      newState: {
+        ...gameState,
+        scores,
+        state: "over",
+      },
+      newSecrets: gameSecrets,
+      message: "OK",
+    };
+  }
+
+  return {
+    newState: {
+      ...gameState,
+      scores,
+      turnScore: 0,
+      activePlayer: nextPlayer(turnOrder, activePlayer),
+    },
+    newSecrets: gameSecrets,
+    message: "OK",
+  };
+};
+
+export const performAction = (
+  gameData: GameData,
+  action: GameAction
+): ActionReturn => {
   switch (action.type) {
     case "start":
       return startGame(gameData, action);
-    case "example":
-      return exampleAction(gameData, action);
+    case "roll":
+      return rollDice(gameData, action);
+    case "bank":
+      return bankPoints(gameData, action);
     default:
       return {
         newState: gameData.gameState,
