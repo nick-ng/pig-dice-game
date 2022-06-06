@@ -10,6 +10,14 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 4. Navigate to one of the following:
    - http://localhost:3232/test.html
 
+## Forking (on same GitHub account)
+
+1. Create new empty repository on GitHub (or whatever)
+2. `mkdir <new-repo> && cd <new-repo>`
+3. `git init`
+4. `git fetch --depth=1 -n https://github.com/nick-ng/pig-dice-game.git`
+5. `git reset --hard $(git commit-tree FETCH_HEAD^{tree} -m "forked https://github.com/nick-ng/pig-dice-game")`
+
 ## ToDos
 
 - ~~Make basic game functions in backend~~
@@ -19,7 +27,7 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 - ~~GitHub build action & Heroku host~~
 - Redis streams & Websocket
   - https://redis.io/docs/manual/data-types/streams/
-- Improve front-end appearance
+- Work on a new game (probably rock-paper-scissors)
 
 ## Notes
 
