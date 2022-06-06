@@ -1,1 +1,1 @@
-web: node dist-back/main.js
+web: node ./dist-back/main.js
