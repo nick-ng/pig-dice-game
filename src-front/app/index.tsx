@@ -84,6 +84,7 @@ export default function App() {
             }}
           />
           <button>Save</button>
+          <p>Entering a name and click save or pressing enter will generate a unique ID and password which will be stored in your browser's local storage. These are used to identify you when hosting and joining games.</p>
         </Form>
       )}
       {havePlayerCredentials && (
