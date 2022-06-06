@@ -18,6 +18,8 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 - Make front-end game play
 - GitHub build action & Heroku host
 - Server sent events to update game state
+  - https://javascript.info/server-sent-events
+  - https://www.digitalocean.com/community/tutorials/nodejs-server-sent-events-build-realtime-app
 - Improve front-end appearance
 
 ## Notes
