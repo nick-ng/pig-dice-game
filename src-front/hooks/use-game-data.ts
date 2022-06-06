@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { isEqual } from "lodash-es";
 
-import { GameData } from "../../src-common/game-types";
+import { GameData, PlayerDetails } from "../../src-common/game-types";
 
-const dataFetcher = async (gameId: string) => {
+const dataFetcher = async (gameId: string, playerDetails: PlayerDetails) => {
   const res = await fetch(`/api/game/${gameId}`, {
     method: "GET",
     headers: {
-      "x-player-id": "asdf",
-      "x-player-password": "bsdf",
+      "x-player-id": playerDetails.playerId,
+      "x-player-password": playerDetails.playerPassword,
     },
   });
 
@@ -17,6 +17,7 @@ const dataFetcher = async (gameId: string) => {
 
 export const useGameData = (
   gameId: string,
+  playerDetails: PlayerDetails,
   repeat: boolean = false
 ): [
   GameData | undefined,
@@ -35,7 +36,7 @@ export const useGameData = (
     ranOnceRef.current = true;
 
     const fetchGameData = async () => {
-      const result = await dataFetcher(gameId);
+      const result = await dataFetcher(gameId, playerDetails);
 
       if (
         result.gameData &&
