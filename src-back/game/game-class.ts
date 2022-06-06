@@ -7,7 +7,7 @@ import {
   GameSecrets,
   GameState,
   LobbyGameState,
-} from "../../src-common/game-types";
+} from "./game-types";
 import { performAction } from "./game-actions";
 import { InputAction } from "./game-action-types";
 

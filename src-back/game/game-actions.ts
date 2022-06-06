@@ -1,4 +1,4 @@
-import { GameData, Scores, ActionReturn } from "../../src-common/game-types";
+import { GameData, Scores, ActionReturn } from "./game-types";
 import { GameAction } from "./game-action-types";
 import { nextPlayer } from "../utils";
 

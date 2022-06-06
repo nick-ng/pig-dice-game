@@ -1,6 +1,6 @@
 import { createClient } from "redis";
 
-import { GameData } from "../../src-common/game-types";
+import { GameData } from "./game-types";
 import Game from "./game-class";
 
 const SHORT_TTL = 60 * 60; // 1 hour in seconds

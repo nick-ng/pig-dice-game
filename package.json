@@ -7,7 +7,7 @@
     "back": "NODE_ENV=dev nodemon --config nodemon.back.json ./src-back/main.ts",
     "front": "NODE_ENV=dev nodemon --config nodemon.front.json ./esbuild.dev.config.js",
     "start": "npm run back & npm run front",
-    "serve": "node dist-back/main.js",
+    "serve": "node ./dist-back/main.js",
     "build-back": "tsc -p ./src-back/tsconfig.json",
     "build-front": "node esbuild.config.js",
     "heroku-postbuild": "npm run build-back && npm run build-front"
