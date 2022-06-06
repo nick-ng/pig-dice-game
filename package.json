@@ -9,7 +9,8 @@
     "start": "npm run back & npm run front",
     "serve": "node ./dist-back/main.js",
     "build-back": "tsc -p ./src-back/tsconfig.json",
-    "build-front": "node esbuild.config.js"
+    "build-front": "node esbuild.config.js",
+    "heroku-postbuild": "npm run build-back && npm run build-front"
   },
   "repository": {
     "type": "git",
