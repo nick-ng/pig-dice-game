@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import { GameData, PlayerDetails } from "../../src-common/game-types";
+import { prevPlayer } from "../../src-common/utils";
 import { useGameData } from "../hooks/use-game-data";
 import Loading from "../loading";
 import Lobby from "./lobby";
@@ -22,7 +23,7 @@ export default function Game({ playerDetails }: GameProps) {
     return <Loading />;
   }
 
-  const { gameState, players, gameSettings } = gameData;
+  const { gameState, players } = gameData;
 
   switch (gameState.state) {
     case "lobby":
@@ -39,7 +40,7 @@ export default function Game({ playerDetails }: GameProps) {
     default:
   }
 
-  const { activePlayer, scores, turnScore, lastRoll } = gameState;
+  const { activePlayer, scores, turnScore, lastRoll, turnOrder } = gameState;
 
   const isActivePlayer = activePlayer === playerDetails.playerId;
   const playerMap = players.reduce((prev: { [key: string]: string }, curr) => {
@@ -47,6 +48,8 @@ export default function Game({ playerDetails }: GameProps) {
     return prev;
   }, {});
   const activePlayerName = playerMap[activePlayer];
+  const prevPlayerId = prevPlayer(turnOrder, activePlayer);
+  const prevPlayerName = playerMap[prevPlayerId];
 
   return (
     <Container>
@@ -78,7 +81,7 @@ export default function Game({ playerDetails }: GameProps) {
         )}
         {turnScore === 0 && lastRoll === 1 && (
           <div>
-            {isActivePlayer ? activePlayerName : "You"} rolled a 1 so it's{" "}
+            {isActivePlayer ? prevPlayerName : "You"} rolled a 1 so it's{" "}
             {isActivePlayer ? "your" : `${activePlayerName}'s`} turn
           </div>
         )}

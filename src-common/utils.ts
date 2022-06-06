@@ -14,3 +14,13 @@ export const nextPlayer = (turnOrder: string[], activePlayer: string) => {
 
   return turnOrder[nextIndex];
 };
+
+export const prevPlayer = (turnOrder: string[], activePlayer: string) => {
+  const nextIndex =
+    turnOrder.findIndex((player) => player === activePlayer) - 1;
+  if (nextIndex >= turnOrder.length) {
+    return turnOrder[0];
+  }
+
+  return turnOrder[nextIndex];
+};

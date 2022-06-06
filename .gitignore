@@ -1,5 +1,4 @@
-dist-back
-dist-front
+dist-*
 
 # Logs
 logs

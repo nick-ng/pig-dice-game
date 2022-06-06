@@ -1,4 +1,5 @@
 {
   "extends": "../tsconfig.base.json",
-  "compilerOptions": { "outDir": "../dist-back" }
+  "compilerOptions": { "outDir": "../dist-back" },
+  "references": [{ "path": "../src-common" }]
 }
