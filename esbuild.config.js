@@ -5,6 +5,7 @@ require("esbuild")
     bundle: true,
     metafile: true,
     minify: true,
+    treeShaking: true,
     format: "esm",
     outdir: "dist-front/",
     plugins: [

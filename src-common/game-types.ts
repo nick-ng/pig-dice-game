@@ -81,3 +81,9 @@ export interface ActionReturn {
   newSecrets: GameSecrets;
   message: string;
 }
+
+export interface PlayerDetails {
+  playerName: string;
+  playerId: string;
+  playerPassword: string;
+}

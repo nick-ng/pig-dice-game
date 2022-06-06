@@ -7,7 +7,7 @@ import {
   GameSecrets,
   GameState,
   LobbyGameState,
-} from "./game-types";
+} from "../../src-common/game-types";
 import { performAction } from "./game-actions";
 import { InputAction } from "./game-action-types";
 
@@ -75,6 +75,18 @@ export default class Game {
   };
 
   getGameDataForPlayer = (playerId: string, playerPassword: string) => {
+    if (!this.players.map((a) => a.id).includes(playerId)) {
+      return {
+        id: this.id,
+        host: this.host,
+        maxPlayers: this.maxPlayers,
+        players: this.players,
+        gameSettings: this.gameSettings,
+        gameSecrets: {},
+        gameState: this.gameState,
+      };
+    }
+
     if (
       !this.gameSecrets[playerId] ||
       !playerPassword ||

@@ -23,6 +23,7 @@ router.get("/:gameId", async (req, res, _next) => {
         res.json({
           message: "OK",
           gameData,
+          refreshDelayMS: 500,
         });
         return;
       default:

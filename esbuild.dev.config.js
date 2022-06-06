@@ -5,7 +5,7 @@ require("esbuild")
     bundle: true,
     metafile: true,
     format: "esm",
-    // sourcemap: true,
+    sourcemap: true,
     outdir: "dist-front/",
     plugins: [
       htmlPlugin({
