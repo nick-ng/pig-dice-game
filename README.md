@@ -2,6 +2,8 @@
 
 Pig is a simple dice game first described in print in John Scarne in 1945. Players take turns to roll a single dice as many times as they wish, adding all roll results to a running total, but losing their gained score for the turn if they roll a 1.
 
+Available at https://pux-pig-dice-game.herokuapp.com
+
 ## Development
 
 1. `npm install`
@@ -10,13 +12,28 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 4. Navigate to one of the following:
    - http://localhost:3232/test.html
 
-## Forking (on same GitHub account)
+## Forking (on different GitHub account)
+
+1. Click the fork button
+
+## Forking (on same or different GitHub account)
 
 1. Create new empty repository on GitHub (or whatever)
 2. `mkdir <new-repo> && cd <new-repo>`
 3. `git init`
 4. `git fetch --depth=1 -n https://github.com/nick-ng/pig-dice-game.git`
 5. `git reset --hard $(git commit-tree FETCH_HEAD^{tree} -m "forked https://github.com/nick-ng/pig-dice-game")`
+
+## Deploying to Heroku
+
+1. Create an empty Heroku App. Note the app's name
+2. Get your Heroku API key from https://dashboard.heroku.com/account
+3. On GitHub repo for your fork, go to the Settings and click on Secrets > Actions
+4. Add 3 new repository secrets
+   - `HEROKU_API_KEY`: API key from above
+   - `HEROKU_APP_NAME`: App name from above
+   - `HEROKU_EMAIL`: Email address of your Heroku account
+5. Push a commit to the `main` branch.
 
 ## ToDos
 
@@ -27,7 +44,7 @@ Pig is a simple dice game first described in print in John Scarne in 1945. Playe
 - ~~GitHub build action & Heroku host~~
 - Redis streams & Websocket
   - https://redis.io/docs/manual/data-types/streams/
-- Work on a new game (probably rock-paper-scissors)
+- Work on a new game (probably rock, paper, scissors)
 
 ## Notes
 

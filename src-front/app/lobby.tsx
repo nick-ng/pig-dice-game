@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import QRCode from "react-qr-code";
 
 import { GameData, PlayerDetails } from "../../src-common/game-types";
 
@@ -10,6 +11,16 @@ interface LobbyProps {
 }
 
 const Container = styled.div``;
+
+const Details = styled.details`
+  margin: 1em 0;
+`;
+
+const QuiteZone = styled.div`
+  background-color: white;
+  padding: 16px;
+  display: inline-block;
+`;
 
 export default function Lobby({
   gameData,
@@ -25,7 +36,12 @@ export default function Lobby({
 
   return (
     <Container>
-      <div>Game ID: {gameData.id}</div>
+      <Details>
+        <summary>QR Code</summary>
+        <QuiteZone>
+          <QRCode value={location.href} />
+        </QuiteZone>
+      </Details>
       {isHost && (
         <button
           onClick={() => {
