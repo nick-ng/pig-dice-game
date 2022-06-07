@@ -16,11 +16,11 @@ export const nextPlayer = (turnOrder: string[], activePlayer: string) => {
 };
 
 export const prevPlayer = (turnOrder: string[], activePlayer: string) => {
-  const nextIndex =
+  const prevIndex =
     turnOrder.findIndex((player) => player === activePlayer) - 1;
-  if (nextIndex >= turnOrder.length) {
-    return turnOrder[0];
+  if (prevIndex < 0) {
+    return turnOrder[turnOrder.length - 1];
   }
 
-  return turnOrder[nextIndex];
+  return turnOrder[prevIndex];
 };
