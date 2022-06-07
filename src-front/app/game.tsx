@@ -87,7 +87,7 @@ export default function Game({ playerDetails }: GameProps) {
         )}
         <div>
           <div>
-            {isActivePlayer ? "Points" : `${activePlayerName}'s points`}
+            {isActivePlayer ? "Your points" : `${activePlayerName}'s points`}
           </div>
           <div>This turn {turnScore}</div>
           <div>Total {scores[activePlayer]}</div>

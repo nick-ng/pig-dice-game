@@ -36,20 +36,28 @@ export const useGameData = (
     ranOnceRef.current = true;
 
     const fetchGameData = async () => {
-      const result = await dataFetcher(gameId, playerDetails);
+      try {
+        const result = await dataFetcher(gameId, playerDetails);
 
-      if (
-        result.gameData &&
-        !isEqual(result.gameData, prevGameDataRef.current)
-      ) {
-        setGameData(result.gameData);
-        prevGameDataRef.current = result.gameData;
-      }
+        if (
+          result.gameData &&
+          !isEqual(result.gameData, prevGameDataRef.current)
+        ) {
+          setGameData(result.gameData);
+          prevGameDataRef.current = result.gameData;
+        }
 
-      if (repeat && result.refreshDelayMS) {
+        if (repeat && result.refreshDelayMS) {
+          timeoutIdRef.current = window.setTimeout(() => {
+            fetchGameData();
+          }, result.refreshDelayMS);
+        }
+      } catch (e) {
+        console.error("Error when fetching game data", e);
+        console.info("Waiting 3 seconds before continuing.");
         timeoutIdRef.current = window.setTimeout(() => {
           fetchGameData();
-        }, result.refreshDelayMS);
+        }, 3000);
       }
     };
 

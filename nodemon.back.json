@@ -1,13 +1,5 @@
 {
-  "ignore": [
-    "src-front/*",
-    "dev-tools/*",
-    "dist/*",
-    "dist-back/*",
-    "dist-front/*",
-    "static/*",
-    "package.json"
-  ],
+  "watch": ["dist-back/"],
   "ext": "js,ts,jsx,tsx,json",
-  "delay": 3000
+  "delay": 200
 }

@@ -1,5 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": { "outDir": "../dist-back" },
-  "references": [{ "path": "../src-common" }]
+  "references": [{ "path": "../src-common" }],
+  "files": ["./main.ts"],
+  "include": ["./**/*"]
 }
