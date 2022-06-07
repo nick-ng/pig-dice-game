@@ -1,5 +1,5 @@
 import Game from "./game-class";
-import { saveGame, findGame } from "./game-redis";
+import { saveGame, findGame, findGame2 } from "./game-redis";
 
 export const newGame = async (
   playerId: string,
@@ -84,6 +84,11 @@ export const getGame = async (
   playerId: string,
   playerPassword: string
 ) => {
+  const tick = Date.now();
+  findGame2(gameId).then((res) => {
+    console.log("elapsed", Date.now() - tick);
+    console.log("res", res);
+  });
   const game = await findGame(gameId);
 
   if (!game) {

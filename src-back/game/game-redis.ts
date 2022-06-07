@@ -17,12 +17,25 @@ client.on("connect", () =>
   console.info(`${new Date().toLocaleTimeString()}: Redis Client Connected`)
 );
 
+const xReadClient = createClient({
+  url: process.env.REDIS_URL,
+});
+xReadClient.connect();
+xReadClient.on("error", (err) =>
+  console.error(`${new Date().toLocaleTimeString()}: xRead Client Error`, err)
+);
+xReadClient.on("connect", () =>
+  console.info(`${new Date().toLocaleTimeString()}: xRead Client Connected`)
+);
+
 const getRedisKey = (gameId: string) => {
   return `game:${gameId.replaceAll(/[^a-z0-9\-]/g, "-")}`.slice(0, 45);
 };
 
 export const saveGame = async (gameData: GameData, longTTL?: boolean) => {
-  await client.set(getRedisKey(gameData.id), JSON.stringify(gameData));
+  await client.xAdd(getRedisKey(gameData.id), "*", {
+    gameData: JSON.stringify(gameData),
+  });
   if (longTTL) {
     await client.expire(getRedisKey(gameData.id), LONG_TTL);
   } else {
@@ -31,11 +44,49 @@ export const saveGame = async (gameData: GameData, longTTL?: boolean) => {
 };
 
 export const findGame = async (gameId: string) => {
-  const res = await client.get(getRedisKey(gameId));
+  const res = (await client.xRevRange(getRedisKey(gameId), "+", "-", {
+    COUNT: 1,
+  })) as { id: string; message: { gameData: string } }[];
 
-  if (typeof res === "string") {
-    return new Game(JSON.parse(res));
+  if (res.length > 0) {
+    return new Game(JSON.parse(res[0].message.gameData));
   }
+
+  return null;
+};
+
+export const findGame2 = async (gameId: string) => {
+  const res = await xReadClient.xRead([{ key: getRedisKey(gameId), id: "$" }], {
+    BLOCK: 0,
+    COUNT: 1,
+  });
+
+  console.log("res", res);
+  res?.forEach((event) => {
+    const { name, messages } = event;
+    if (messages.length === 0) {
+      return;
+    }
+  });
+
+  return res;
+};
+
+export const findGame3 = async (gameId: string) => {
+  console.log("hi");
+  const res = await client.xRead(
+    { key: getRedisKey(gameId), id: "$" },
+    {
+      BLOCK: 0,
+      COUNT: 1,
+    }
+  );
+
+  console.log("res", res);
+
+  // if (res.length > 0) {
+  //   return new Game(JSON.parse(res[0].message.gameData));
+  // }
 
   return null;
 };
