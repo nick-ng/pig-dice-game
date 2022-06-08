@@ -84,11 +84,7 @@ export const getGame = async (
   playerId: string,
   playerPassword: string
 ) => {
-  const tick = Date.now();
-  findGame2(gameId).then((res) => {
-    console.log("elapsed", Date.now() - tick);
-    console.log("res", res);
-  });
+  findGame2(gameId);
   const game = await findGame(gameId);
 
   if (!game) {

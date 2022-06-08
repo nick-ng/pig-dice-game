@@ -55,18 +55,30 @@ export const findGame = async (gameId: string) => {
   return null;
 };
 
-export const findGame2 = async (gameId: string) => {
-  const res = await xReadClient.xRead([{ key: getRedisKey(gameId), id: "$" }], {
-    BLOCK: 0,
-    COUNT: 1,
-  });
+let lastId = "$";
 
-  console.log("res", res);
+export const findGame2 = async (gameId: string) => {
+  const res = await xReadClient.xRead(
+    [{ key: getRedisKey(gameId), id: lastId }],
+    {
+      BLOCK: 0,
+      COUNT: 2,
+    }
+  );
+
+  console.log("res findGame2", res);
+  console.log("res findGame2 j", JSON.stringify(res));
   res?.forEach((event) => {
     const { name, messages } = event;
+    console.log("name", name);
+    console.log("message", messages);
     if (messages.length === 0) {
       return;
     }
+
+    const lastMessage = messages[messages.length - 1];
+    lastId = lastMessage.id;
+    console.log("lastId", lastId);
   });
 
   return res;
@@ -89,9 +101,4 @@ export const findGame3 = async (gameId: string) => {
   // }
 
   return null;
-};
-
-export const allGames = {
-  push: saveGame,
-  find: findGame,
 };
