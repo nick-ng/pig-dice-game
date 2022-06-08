@@ -1,4 +1,4 @@
-import { RedisClientType } from "redis";
+import { createClient } from "redis";
 
 export interface listener {
   streamKey: string;
@@ -7,21 +7,34 @@ export interface listener {
 }
 
 export default class StreamHelper {
-  regularClient: RedisClientType;
-  xReadClient: RedisClientType;
+  regularClient: ReturnType<typeof createClient>;
+  xReadClient: ReturnType<typeof createClient>;
+  xReadClientId: string | null;
   listeners: listener[];
   listening: boolean;
   lastIds: {
     [name: string]: string;
   };
 
-  constructor(regularClient: RedisClientType, xReadClient: RedisClientType) {
+  constructor(
+    regularClient: ReturnType<typeof createClient>,
+    xReadClient: ReturnType<typeof createClient>
+  ) {
+    if (regularClient === xReadClient) {
+      throw new Error("regularClient and xReadClient have to be different");
+    }
     this.regularClient = regularClient;
     this.xReadClient = xReadClient;
+    this.xReadClientId = null;
+
     this.lastIds = {};
 
     this.listeners = [];
     this.listening = false;
+
+    (async () => {
+      this.xReadClientId = (await xReadClient.clientId()).toString(10);
+    })();
   }
 
   addListener = (newListener: listener): void => {
@@ -29,6 +42,8 @@ export default class StreamHelper {
 
     if (!this.listening) {
       this.listen();
+    } else if (this.xReadClientId !== null) {
+      this.regularClient.sendCommand(["CLIENT", "UNBLOCK", this.xReadClientId]);
     }
   };
 

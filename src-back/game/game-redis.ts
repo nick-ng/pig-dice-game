@@ -2,35 +2,35 @@ import { createClient } from "redis";
 
 import { GameData } from "../../src-common/game-types";
 import Game from "./game-class";
+import StreamHelper from "../redis/stream-helper";
 
 const SHORT_TTL = 60 * 60; // 1 hour in seconds
 const LONG_TTL = 36 * 60 * 60; // 36 hours in seconds
 
-const client = createClient({
-  url: process.env.REDIS_URL,
-});
-client.connect();
-client.on("error", (err) =>
-  console.error(`${new Date().toLocaleTimeString()}: Redis Client Error`, err)
-);
-client.on("connect", () =>
-  console.info(`${new Date().toLocaleTimeString()}: Redis Client Connected`)
-);
+const createClient2 = (name: string) => {
+  const newClient = createClient({
+    url: process.env.REDIS_URL,
+  });
 
-const xReadClient = createClient({
-  url: process.env.REDIS_URL,
-});
-xReadClient.connect();
-xReadClient.on("error", (err) =>
-  console.error(`${new Date().toLocaleTimeString()}: xRead Client Error`, err)
-);
-xReadClient.on("connect", () =>
-  console.info(`${new Date().toLocaleTimeString()}: xRead Client Connected`)
-);
+  newClient.connect();
+  newClient.on("error", (err) =>
+    console.error(`${new Date().toLocaleTimeString()}: ${name} Error`, err)
+  );
+  newClient.on("connect", () =>
+    console.info(`${new Date().toLocaleTimeString()}: ${name} Connected`)
+  );
+
+  return newClient;
+};
 
 const getRedisKey = (gameId: string) => {
   return `game:${gameId.replaceAll(/[^a-z0-9\-]/g, "-")}`.slice(0, 45);
 };
+
+const client = createClient2("Redis Client");
+const xReadClient = createClient2("xRead Client");
+
+export const streamHelper = new StreamHelper(client, xReadClient);
 
 export const saveGame = async (gameData: GameData, longTTL?: boolean) => {
   await client.xAdd(getRedisKey(gameData.id), "*", {
