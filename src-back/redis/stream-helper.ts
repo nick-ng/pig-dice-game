@@ -1,4 +1,4 @@
-import { createClient } from "redis";
+import { RedisClient2 } from "../redis";
 
 export interface listener {
   streamKey: string;
@@ -7,34 +7,25 @@ export interface listener {
 }
 
 export default class StreamHelper {
-  regularClient: ReturnType<typeof createClient>;
-  xReadClient: ReturnType<typeof createClient>;
-  xReadClientId: string | null;
+  regularClient: RedisClient2;
+  xReadClient: RedisClient2;
   listeners: listener[];
   listening: boolean;
   lastIds: {
     [name: string]: string;
   };
 
-  constructor(
-    regularClient: ReturnType<typeof createClient>,
-    xReadClient: ReturnType<typeof createClient>
-  ) {
+  constructor(regularClient: RedisClient2, xReadClient: RedisClient2) {
     if (regularClient === xReadClient) {
       throw new Error("regularClient and xReadClient have to be different");
     }
     this.regularClient = regularClient;
     this.xReadClient = xReadClient;
-    this.xReadClientId = null;
 
     this.lastIds = {};
 
     this.listeners = [];
     this.listening = false;
-
-    (async () => {
-      this.xReadClientId = (await xReadClient.clientId()).toString(10);
-    })();
   }
 
   addListener = (newListener: listener): void => {
@@ -42,8 +33,12 @@ export default class StreamHelper {
 
     if (!this.listening) {
       this.listen();
-    } else if (this.xReadClientId !== null) {
-      this.regularClient.sendCommand(["CLIENT", "UNBLOCK", this.xReadClientId]);
+    } else if (typeof this.xReadClient.id === "string") {
+      this.regularClient.sendCommand([
+        "CLIENT",
+        "UNBLOCK",
+        this.xReadClient.id,
+      ]);
     }
   };
 
@@ -52,15 +47,18 @@ export default class StreamHelper {
   };
 
   xRead = async () => {
+    const streamKeys = this.listeners.map((listener) => listener.streamKey);
+    const uniqueStreamKeys = [...new Set(streamKeys)];
+
     return this.xReadClient.xRead(
-      this.listeners.map((listener) => {
-        if (!this.lastIds[listener.streamKey]) {
-          this.lastIds[listener.streamKey] = "$";
+      uniqueStreamKeys.map((streamKey) => {
+        if (!this.lastIds[streamKey]) {
+          this.lastIds[streamKey] = "$";
         }
 
         return {
-          key: listener.streamKey,
-          id: this.lastIds[listener.streamKey],
+          key: streamKey,
+          id: this.lastIds[streamKey],
         };
       }),
       { BLOCK: 10000, COUNT: 100 }

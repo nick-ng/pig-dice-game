@@ -5,11 +5,33 @@ import express from "express";
 import compression from "compression";
 import path from "path";
 import http from "http";
+import { WebSocketServer } from "ws";
 
 import gameRouter from "./game/game-router";
 
 const app = express();
 const server = http.createServer(app);
+
+const webSocketServer = new WebSocketServer({
+  server,
+});
+
+webSocketServer.on("connection", (webSocketConnection) => {
+  webSocketConnection.on("message", (buffer) => {
+    console.log("message", buffer.toString());
+    try {
+      console.log("message JSON", JSON.parse(buffer.toString()));
+    } catch (e) {
+      console.log("e");
+    }
+
+    setTimeout(() => {
+      webSocketConnection.send(`you sent ${buffer.toString()}`);
+    }, 500);
+  });
+
+  webSocketConnection.send("who are you?");
+});
 
 const port = process.env.PORT || 3232;
 app.set("port", port);
@@ -31,6 +53,7 @@ app.use(express.static(path.resolve(process.cwd(), "dist-front")));
 app.use(express.static(path.resolve(process.cwd(), "static")));
 
 if (process.env.NODE_ENV === "dev") {
+  console.info("Dev environment");
   app.use(express.static(path.resolve(process.cwd(), "dev-tools")));
 }
 
