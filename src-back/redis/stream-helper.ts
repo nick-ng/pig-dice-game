@@ -1,15 +1,11 @@
-import { RedisClient2 } from "../redis";
+import { Listener } from "../../dist-common/redis-types";
 
-export interface listener {
-  streamKey: string;
-  id: string;
-  updateHandler(message: { [key: string]: string }): void;
-}
+import { RedisClient2 } from "../redis";
 
 export default class StreamHelper {
   regularClient: RedisClient2;
   xReadClient: RedisClient2;
-  listeners: listener[];
+  listeners: Listener[];
   listening: boolean;
   lastIds: {
     [name: string]: string;
@@ -28,7 +24,7 @@ export default class StreamHelper {
     this.listening = false;
   }
 
-  addListener = (newListener: listener): void => {
+  addListener = (newListener: Listener): void => {
     this.listeners.push(newListener);
 
     if (!this.listening) {
@@ -84,8 +80,16 @@ export default class StreamHelper {
           (listener) => listener.streamKey === name
         );
 
+        let dataObject: { [key: string]: string } | null = null;
+
+        try {
+          dataObject = JSON.parse(lastMessage.message.data);
+        } catch (_e) {
+          dataObject = null;
+        }
+
         interestedListeners.forEach((listener) =>
-          listener.updateHandler(lastMessage.message)
+          listener.updateHandler(lastMessage.message.data, dataObject)
         );
       });
     }

@@ -9,7 +9,7 @@ import {
   LobbyGameState,
 } from "../../src-common/game-types";
 import { performAction } from "./game-actions";
-import { InputAction } from "./game-action-types";
+import { InputAction } from "../../src-common/game-action-types";
 
 export default class Game {
   id: string;

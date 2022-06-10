@@ -56,16 +56,6 @@ export interface GameData {
   gameState: GameState;
 }
 
-export interface Game {
-  id: string;
-  host: string;
-  maxPlayers: number;
-  players: Players;
-  gameSettings: GameSettings;
-  gameSecrets: GameSecrets;
-  gameState: GameState;
-}
-
 export interface InitObject {
   id?: string;
   host: string;

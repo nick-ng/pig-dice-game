@@ -1,7 +1,9 @@
 {
   "extends": "../tsconfig.base.json",
-  "compilerOptions": { "outDir": "../dist-back" },
+  "compilerOptions": {
+    "outDir": "../dist-back"
+  },
   "references": [{ "path": "../src-common" }],
   "files": ["./main.ts"],
-  "include": ["./**/*"]
+  "include": ["./**/*", "../src-common/game-action-types.ts"]
 }
