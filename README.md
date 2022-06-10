@@ -37,16 +37,19 @@ Available at https://pux-pig-dice-game.herokuapp.com
 
 ## ToDos
 
-- ~~Make basic game functions in backend~~
-- ~~Use Redis to store game state~~
-- ~~Make front=end game lobby~~
-- ~~Make front-end game play~~
-- ~~GitHub build action & Heroku host~~
-- Redis streams & Websocket
+- [x] Make basic game functions in backend
+- [x] Use Redis to store game state
+- [x] Make front=end game lobby
+- [x] Make front-end game play
+- [x] GitHub build action & Heroku host
+- [ ] Redis streams & Websocket
   - https://redis.io/docs/manual/data-types/streams/
-- Work on a new game (probably rock, paper, scissors)
+- [ ] Add CORS so people can write their own fron-ends
+- [ ] Work on a new game (probably pig (card game))
 
 ## Notes
+
+### Game State
 
 On the server
 
@@ -110,3 +113,7 @@ Sent to Alice
   }
 }
 ```
+
+### WebSocket API
+
+If you get disconnected, you need to reconnect and re-listen to the game. You'll still be in the game so you don't need to rejoin it..

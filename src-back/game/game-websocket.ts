@@ -21,6 +21,34 @@ interface Connection {
   gameId: string;
 }
 
+const makeUpdateHandler =
+  (connection: Connection) =>
+  (
+    _message: string | null,
+    messageObject: { [key: string]: string } | null
+  ) => {
+    if (typeof messageObject?.host !== "string") {
+      return;
+    }
+
+    const gameData = decodeGameData(messageObject);
+
+    if (!gameData) {
+      return;
+    }
+
+    const game = new Game(gameData);
+
+    connection.webSocketConnection.send(
+      JSON.stringify(
+        game.getGameDataForPlayer(
+          connection.playerId,
+          connection.playerPassword
+        )
+      )
+    );
+  };
+
 export default class GameWebSocketServer {
   webSocketServer: WebSocketServer;
   connections: Connection[];
@@ -97,36 +125,17 @@ export default class GameWebSocketServer {
 
     const { state: gameStateKey } = getRedisKeys(data.gameId);
 
-    const updateHandler = (
-      _message: string | null,
-      messageObject: { [key: string]: string } | null
-    ) => {
-      if (typeof messageObject?.host !== "string") {
-        return;
-      }
-
-      const gameData = decodeGameData(messageObject);
-
-      if (!gameData) {
-        return;
-      }
-
-      const game = new Game(gameData);
-
-      webSocketConnection.send(
-        JSON.stringify(
-          game.getGameDataForPlayer(
-            connection.playerId,
-            connection.playerPassword
-          )
-        )
-      );
-    };
-
     this.streamHelper.addListener({
       id,
       streamKey: gameStateKey,
-      updateHandler,
+      updateHandler: makeUpdateHandler(connection),
     });
+
+    webSocketConnection.onclose = () => {
+      this.connections = this.connections.filter(
+        (connection) => connection.id !== id
+      );
+      this.streamHelper.removeListener(id);
+    };
   };
 }
