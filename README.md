@@ -11,6 +11,7 @@ Available at https://pux-pig-dice-game.herokuapp.com
 3. `npm start`
 4. Navigate to one of the following:
    - http://localhost:3232/test.html
+   - http://localhost:3232/test-ws.html
 
 ## Forking (on different GitHub account)
 
@@ -23,6 +24,8 @@ Available at https://pux-pig-dice-game.herokuapp.com
 3. `git init`
 4. `git fetch --depth=1 -n https://github.com/nick-ng/pig-dice-game.git`
 5. `git reset --hard $(git commit-tree FETCH_HEAD^{tree} -m "forked https://github.com/nick-ng/pig-dice-game")`
+6. `git push --force`
+7. Change branch permissions etc.
 
 ## Deploying to Heroku
 

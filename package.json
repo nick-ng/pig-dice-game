@@ -5,8 +5,9 @@
   "main": "./dist-back/main.js",
   "scripts": {
     "back": "NODE_ENV=dev tsc -build ./src-back/tsconfig.json --watch & NODE_ENV=dev nodemon --config nodemon.back.json ./dist-back/main.js",
+    "common": "NODE_ENV=dev tsc -build ./src-common/tsconfig.json --watch",
     "front": "NODE_ENV=dev nodemon --config nodemon.front.json ./esbuild.dev.config.js",
-    "start": "npm run back & npm run front",
+    "start": "rm -rf ./dist-* && npm run back & npm run front & npm run common",
     "serve": "node ./dist-back/main.js",
     "build-back": "tsc -build ./src-back/tsconfig.json",
     "build-front": "node esbuild.config.js",

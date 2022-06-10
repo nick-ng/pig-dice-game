@@ -67,6 +67,7 @@ export const playGame = async (
     return {
       code: 400,
       message: result.message,
+      gameData: game.getGameDataForPlayer(playerId, playerPassword),
     };
   }
 

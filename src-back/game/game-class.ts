@@ -75,7 +75,12 @@ export default class Game {
   };
 
   getGameDataForPlayer = (playerId: string, playerPassword: string) => {
-    if (!this.players.map((a) => a.id).includes(playerId)) {
+    if (
+      !this.players.map((a) => a.id).includes(playerId) ||
+      !this.gameSecrets[playerId] ||
+      !playerPassword ||
+      this.gameSecrets[playerId].password !== playerPassword
+    ) {
       return {
         id: this.id,
         host: this.host,
@@ -84,17 +89,6 @@ export default class Game {
         gameSettings: this.gameSettings,
         gameSecrets: {},
         gameState: this.gameState,
-      };
-    }
-
-    if (
-      !this.gameSecrets[playerId] ||
-      !playerPassword ||
-      this.gameSecrets[playerId].password !== playerPassword
-    ) {
-      return {
-        type: "error",
-        message: "Wrong password",
       };
     }
 
@@ -178,6 +172,13 @@ export default class Game {
       this.getGameData(),
       { ...action, playerId }
     );
+
+    if (message !== "OK") {
+      return {
+        type: "error",
+        message,
+      };
+    }
 
     this.gameState = newState;
     this.gameSecrets = newSecrets;

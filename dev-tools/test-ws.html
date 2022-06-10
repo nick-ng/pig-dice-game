@@ -26,13 +26,15 @@
 
 <body>
   <div id="app">
+    <input v-model="gameId" />
+    <p>{{ gameId }}</p>
     <div class="columnContainer">
       <div class="column">
-        <h2>Websocket 1</h2>
-        <button @click="newSocket(1)">New Socket</button>
-        <button @click="sendOnSocket(1, 'hello')">Send Hello</button>
-        <button @click="sendOnSocket(1, 'world')">Send World</button>
-        <button @click="sendJsonOnSocket(1, 'hello world')">Send Object</button>
+        <h2>Websocket 0</h2>
+        <button @click="newSocket(0)">New Socket</button>
+        <button @click="sendOnSocket(0, 'hello')">Send Hello</button>
+        <button @click="sendOnSocket(0, 'world')">Send World</button>
+        <button @click="sendJsonOnSocket(0, 'hello world')">Send Object</button>
         <pre>{{ output[1] }}</pre>
       </div>
     </div>
@@ -55,7 +57,24 @@
       methods: {
         newSocket(n) {
           (async () => {
+            const player = this.player[n];
+            const webSocketMessage = {
+              playerId: player.id,
+              playerPassword: player.password,
+              gameId: this.gameId,
+              type: "listen"
+            };
+
+            console.info(`creating websocket ${n}`)
             const socket = new WebSocket(`ws://${location.host}`)
+
+            socket.addEventListener('open', e => {
+              console.info(`websocket open ${n}`, e)
+              const message = JSON.stringify(webSocketMessage)
+              console.info(`sending to websocket ${n}`, message)
+              // socket.send('hi')
+              socket.send(message)
+            })
 
             socket.addEventListener('message', e => {
               const { data } = e

@@ -70,8 +70,20 @@ export default class GameWebSocketServer {
           ) as WebsocketIncomingMessageObject;
           this.messageHandler(data, webSocketConnection);
         } catch (e) {
-          webSocketConnection.send("All messages must be JSON strings.");
-          webSocketConnection.close(400, "All messages must be JSON strings.");
+          if (
+            e instanceof SyntaxError &&
+            e.message.match(/^Unexpected token \S+ in JSON/)
+          ) {
+            const errorMessage = "All messages must be JSON strings.";
+            webSocketConnection.send(errorMessage);
+            webSocketConnection.close(1003, errorMessage);
+          }
+
+          if (e instanceof Error) {
+            const errorMessage = `Bad request: ${e.message}`;
+            webSocketConnection.send(errorMessage);
+            webSocketConnection.close(1003, errorMessage);
+          }
         }
       });
     });

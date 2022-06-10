@@ -6,7 +6,7 @@ export const decodeGameData = (data: any): GameData | null => {
     typeof data.id !== "string" ||
     typeof data.host !== "string" ||
     typeof data.maxPlayers !== "number" ||
-    Array.isArray(data.players) ||
+    !Array.isArray(data.players) ||
     typeof data.gameSettings !== "object" ||
     typeof data.gameSecrets !== "object" ||
     typeof data.gameState !== "object"
