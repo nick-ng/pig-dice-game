@@ -47,7 +47,7 @@ Available at https://pux-pig-dice-game.herokuapp.com
 - [x] GitHub build action & Heroku host
 - [x] Redis streams & Websocket
   - https://redis.io/docs/manual/data-types/streams/
-- [ ] Add CORS so people can write their own fron-ends
+- [x] Add CORS so people can write their own fron-ends
 - [ ] Work on a new game (probably pig (card game))
 
 ## Notes
