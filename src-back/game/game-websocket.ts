@@ -95,6 +95,7 @@ export default class GameWebSocketServer {
 
           return;
         }
+
         try {
           const data = JSON.parse(
             buffer.toString()
