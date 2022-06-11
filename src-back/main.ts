@@ -5,6 +5,7 @@ import express from "express";
 import compression from "compression";
 import path from "path";
 import http from "http";
+import cors from "cors";
 
 import gameRouter from "./game/game-router";
 import GameWebSocketServer from "./game/game-websocket";
@@ -30,6 +31,14 @@ if (process.env.NODE_ENV === "dev") {
   });
 }
 
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
 app.use(compression());
 app.use(express.json());
 

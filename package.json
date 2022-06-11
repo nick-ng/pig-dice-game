@@ -30,6 +30,7 @@
     "@craftamap/esbuild-plugin-html": "^0.4.0",
     "@types/react-dom": "^18.0.5",
     "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "esbuild": "^0.14.42",
     "express": "^4.18.1",
