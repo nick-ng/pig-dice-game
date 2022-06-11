@@ -10,7 +10,6 @@
     "serve": "node ./dist-back/main.js",
     "build-back": "tsc --build ./src-back/tsconfig.json",
     "build-front": "node esbuild.config.js",
-    "bb": "rm -rf ./dist-back && npm run build-back",
     "check-build": "rm -rf ./dist-* && tsc --build ./src-back/tsconfig.check.json && node esbuild.check.config.js",
     "heroku-postbuild": "npm run build-back && npm run build-front",
     "sim-deploy": "rm -rf ./dist-* && npm run heroku-postbuild && npm run serve"
