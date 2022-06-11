@@ -42,32 +42,3 @@ export const findGame = async (gameId: string) => {
 
   return null;
 };
-
-let lastId = "$";
-
-export const findGame2 = async (gameId: string) => {
-  const res = await xReadClient.xRead(
-    [{ key: getRedisKeys(gameId).state, id: lastId }],
-    {
-      BLOCK: 0,
-      COUNT: 2,
-    }
-  );
-
-  console.log("res findGame2", res);
-  console.log("res findGame2 j", JSON.stringify(res));
-  res?.forEach((event) => {
-    const { name, messages } = event;
-    console.log("name", name);
-    console.log("message", messages);
-    if (messages.length === 0) {
-      return;
-    }
-
-    const lastMessage = messages[messages.length - 1];
-    lastId = lastMessage.id;
-    console.log("lastId", lastId);
-  });
-
-  return res;
-};

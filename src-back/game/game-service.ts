@@ -1,5 +1,5 @@
 import Game from "./game-class";
-import { saveGame, findGame, findGame2 } from "./game-redis";
+import { saveGame, findGame } from "./game-redis";
 
 export const newGame = async (
   playerId: string,
@@ -85,7 +85,6 @@ export const getGame = async (
   playerId: string,
   playerPassword: string
 ) => {
-  findGame2(gameId);
   const game = await findGame(gameId);
 
   if (!game) {

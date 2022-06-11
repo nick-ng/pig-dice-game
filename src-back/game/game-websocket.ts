@@ -39,14 +39,15 @@ const makeUpdateHandler =
 
     const game = new Game(gameData);
 
-    connection.webSocketConnection.send(
-      JSON.stringify(
-        game.getGameDataForPlayer(
-          connection.playerId,
-          connection.playerPassword
-        )
-      )
-    );
+    const outGoingMessage = {
+      type: "game-data",
+      payload: game.getGameDataForPlayer(
+        connection.playerId,
+        connection.playerPassword
+      ),
+    };
+
+    connection.webSocketConnection.send(JSON.stringify(outGoingMessage));
   };
 
 export default class GameWebSocketServer {
@@ -148,6 +149,22 @@ export default class GameWebSocketServer {
         (connection) => connection.id !== id
       );
       this.streamHelper.removeListener(id);
+
+      if (process.env.NODE_ENV === "dev") {
+        console.debug(
+          new Date().toLocaleTimeString(),
+          "WebSocket disconnected. total:",
+          this.connections.length
+        );
+      }
     };
+
+    if (process.env.NODE_ENV === "dev") {
+      console.debug(
+        new Date().toLocaleTimeString(),
+        "WebSocket connected. total:",
+        this.connections.length
+      );
+    }
   };
 }

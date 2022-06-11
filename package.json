@@ -4,10 +4,9 @@
   "description": "Pig is a simple dice game first described in print in John Scarne in 1945. Players take turns to roll a single dice as many times as they wish, adding all roll results to a running total, but losing their gained score for the turn if they roll a 1.",
   "main": "./dist-back/main.js",
   "scripts": {
-    "back": "NODE_ENV=dev tsc -build ./src-back/tsconfig.json --watch & NODE_ENV=dev nodemon --config nodemon.back.json ./dist-back/main.js",
-    "common": "NODE_ENV=dev tsc -build ./src-common/tsconfig.json --watch",
+    "back": "NODE_ENV=dev tsc --build ./src-back/tsconfig.json --watch & NODE_ENV=dev nodemon --config nodemon.back.json ./dist-back/main.js",
     "front": "NODE_ENV=dev nodemon --config nodemon.front.json ./esbuild.dev.config.js",
-    "start": "rm -rf ./dist-* && npm run back & npm run front & npm run common",
+    "start": "rm -rf ./dist-* && npm run back & npm run front",
     "serve": "node ./dist-back/main.js",
     "build-back": "tsc -build ./src-back/tsconfig.json",
     "build-front": "node esbuild.config.js",

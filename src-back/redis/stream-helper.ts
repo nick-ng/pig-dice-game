@@ -1,4 +1,7 @@
-import { Listener } from "../../dist-common/redis-types";
+import {
+  Listener,
+  DefaultStreamMessageType,
+} from "../../dist-common/redis-types";
 
 import { RedisClient2 } from "../redis";
 
@@ -24,7 +27,24 @@ export default class StreamHelper {
     this.listening = false;
   }
 
-  addListener = (newListener: Listener): void => {
+  static sendMessage = (
+    message: DefaultStreamMessageType,
+    interestedListeners: Listener[]
+  ) => {
+    let dataObject: { [key: string]: string } | null = null;
+
+    try {
+      dataObject = JSON.parse(message.message.data);
+    } catch (_e) {
+      dataObject = null;
+    }
+
+    interestedListeners.forEach((listener) =>
+      listener.updateHandler(message.message.data, dataObject)
+    );
+  };
+
+  addListener = async (newListener: Listener): Promise<void> => {
     this.listeners.push(newListener);
 
     if (!this.listening) {
@@ -36,10 +56,36 @@ export default class StreamHelper {
         this.xReadClient.id,
       ]);
     }
+
+    const { streamKey } = newListener;
+
+    const res = (await this.regularClient.xRevRange(streamKey, "+", "-", {
+      COUNT: 1,
+    })) as DefaultStreamMessageType[];
+
+    if (res.length > 0) {
+      StreamHelper.sendMessage(res[0], [newListener]);
+    }
+
+    if (process.env.NODE_ENV === "dev") {
+      console.debug(
+        new Date().toLocaleTimeString(),
+        "stream listeners added. total:",
+        this.listeners.length
+      );
+    }
   };
 
   removeListener = (id: string): void => {
     this.listeners = this.listeners.filter((a) => a.id !== id);
+
+    if (process.env.NODE_ENV === "dev") {
+      console.debug(
+        new Date().toLocaleTimeString(),
+        "stream listeners removed. total:",
+        this.listeners.length
+      );
+    }
   };
 
   xRead = async () => {
@@ -64,7 +110,12 @@ export default class StreamHelper {
   listen = async () => {
     while (this.listeners.length > 0) {
       this.listening = true;
-      const res = await this.xRead();
+      const res = (await this.xRead()) as
+        | {
+            name: string;
+            messages: DefaultStreamMessageType[];
+          }[]
+        | null;
 
       res?.forEach((event) => {
         const { name, messages } = event;
@@ -73,24 +124,15 @@ export default class StreamHelper {
           return;
         }
 
-        const lastMessage = messages[messages.length - 1];
+        const lastMessage: DefaultStreamMessageType =
+          messages[messages.length - 1];
         this.lastIds[name] = lastMessage.id;
 
         const interestedListeners = this.listeners.filter(
           (listener) => listener.streamKey === name
         );
 
-        let dataObject: { [key: string]: string } | null = null;
-
-        try {
-          dataObject = JSON.parse(lastMessage.message.data);
-        } catch (_e) {
-          dataObject = null;
-        }
-
-        interestedListeners.forEach((listener) =>
-          listener.updateHandler(lastMessage.message.data, dataObject)
-        );
+        StreamHelper.sendMessage(lastMessage, interestedListeners);
       });
     }
 
