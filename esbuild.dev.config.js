@@ -3,6 +3,7 @@ require("esbuild")
   .build({
     entryPoints: ["src-front/index.tsx"],
     bundle: true,
+    tsconfig: "./src-front/tsconfig.json",
     metafile: true,
     format: "esm",
     sourcemap: true,

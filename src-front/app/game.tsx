@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import { GameData, PlayerDetails } from "../../dist-common/game-types";
+import { PlayerDetails } from "../../dist-common/game-types";
 import { prevPlayer } from "../../dist-common/utils";
 import { useGameSocket } from "../hooks/use-game-socket";
 import Loading from "../loading";
@@ -17,7 +17,10 @@ const Container = styled.div``;
 
 export default function Game({ playerDetails }: GameProps) {
   const { gameId } = useParams();
-  const { gameData, sendViaWebSocket } = useGameSocket(gameId!, playerDetails);
+  const { gameData, roundTripTime, sendViaWebSocket } = useGameSocket(
+    gameId!,
+    playerDetails
+  );
 
   if (typeof gameData === "undefined") {
     return <Loading />;
@@ -68,12 +71,6 @@ export default function Game({ playerDetails }: GameProps) {
         turn
       </div>
       <div>
-        {turnScore === 0 && lastRoll === 1 && (
-          <div>
-            {isActivePlayer ? prevPlayerName : "You"} rolled a 1 so it's{" "}
-            {isActivePlayer ? "your" : `${activePlayerName}'s`} turn
-          </div>
-        )}
         <div>
           <div>
             {isActivePlayer ? "Your points" : `${activePlayerName}'s points`}
@@ -82,59 +79,60 @@ export default function Game({ playerDetails }: GameProps) {
           <div>Total {scores[activePlayer]}</div>
         </div>
       </div>
-      {isActivePlayer && (
-        <div>
-          <button
-            onClick={async () => {
-              const res = await fetch(`/api/game/${gameId}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json;charset=utf-8",
-                  "x-player-id": playerDetails.playerId,
-                  "x-player-password": playerDetails.playerPassword,
-                },
-                body: JSON.stringify({
-                  action: "roll",
-                }),
-              });
-
-              const { message, gameData } = (await res.json()) as {
-                message: string;
-                gameData: GameData;
-              };
-            }}
-          >
-            Roll Dice
-          </button>
-          <button
-            onClick={async () => {
-              const res = await fetch(`/api/game/${gameId}`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json;charset=utf-8",
-                  "x-player-id": playerDetails.playerId,
-                  "x-player-password": playerDetails.playerPassword,
-                },
-                body: JSON.stringify({
-                  action: "bank",
-                }),
-              });
-
-              const { message, gameData } = (await res.json()) as {
-                message: string;
-                gameData: GameData;
-              };
-            }}
-          >
-            Bank {turnScore} Points
-          </button>
-        </div>
-      )}
+      <div>
+        <button
+          disabled={!isActivePlayer}
+          onClick={() => {
+            if (!gameId) {
+              return;
+            }
+            sendViaWebSocket({
+              type: "action",
+              playerId: playerDetails.playerId,
+              playerPassword: playerDetails.playerPassword,
+              gameId,
+              action: {
+                playerId: playerDetails.playerId,
+                type: "roll",
+              },
+            });
+          }}
+        >
+          Roll Dice
+        </button>
+        <button
+          disabled={!isActivePlayer}
+          onClick={() => {
+            if (!gameId) {
+              return;
+            }
+            sendViaWebSocket({
+              type: "action",
+              playerId: playerDetails.playerId,
+              playerPassword: playerDetails.playerPassword,
+              gameId,
+              action: {
+                playerId: playerDetails.playerId,
+                type: "bank",
+              },
+            });
+          }}
+        >
+          Bank {turnScore} Points
+        </button>
+      </div>
       {turnScore > 0 && typeof lastRoll === "number" && (
         <div>
           {isActivePlayer ? "You" : activePlayerName} rolled a {lastRoll}
         </div>
       )}
+      {turnScore === 0 && lastRoll === 1 && (
+        <div>
+          {isActivePlayer ? prevPlayerName : "You"} rolled a 1 so it's{" "}
+          {isActivePlayer ? "your" : `${activePlayerName}'s`} turn
+        </div>
+      )}
+      <div>Round Trip Ping: {roundTripTime} ms</div>
     </Container>
   );
 }

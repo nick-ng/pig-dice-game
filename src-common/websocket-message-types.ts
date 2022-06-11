@@ -4,7 +4,6 @@ interface BasicIncomingMessageObject {
   playerId: string;
   playerPassword: string;
   gameId: string;
-  type: string;
 }
 
 interface ListenIncomingMessageObject extends BasicIncomingMessageObject {
@@ -15,13 +14,13 @@ interface JoinIncomingMessageObject extends BasicIncomingMessageObject {
   type: "join";
 }
 
-interface ActionIncomingMessageObject extends BasicIncomingMessageObject {
+export interface ActionIncomingMessageObject
+  extends BasicIncomingMessageObject {
   type: "action";
   action: GameAction;
 }
 
 export type WebsocketIncomingMessageObject =
-  | BasicIncomingMessageObject
   | ListenIncomingMessageObject
   | JoinIncomingMessageObject
   | ActionIncomingMessageObject;
