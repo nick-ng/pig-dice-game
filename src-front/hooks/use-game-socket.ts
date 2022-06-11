@@ -1,21 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { isEqual } from "lodash-es";
-
-import { sleep } from "../../dist-common/utils";
 
 import { GameData, PlayerDetails } from "../../src-common/game-types";
-
-const dataFetcher = async (gameId: string, playerDetails: PlayerDetails) => {
-  const res = await fetch(`/api/game/${gameId}`, {
-    method: "GET",
-    headers: {
-      "x-player-id": playerDetails.playerId,
-      "x-player-password": playerDetails.playerPassword,
-    },
-  });
-
-  return res.json();
-};
 
 const WEBSOCKET_URL = location.origin.replace(/^http/i, "ws");
 
@@ -56,7 +41,10 @@ export const useGameSocket = (
         return;
       }
 
-      console.info("Getting a new WebSocket connection");
+      console.info(
+        new Date().toLocaleTimeString(),
+        "Getting a new WebSocket connection"
+      );
       webSocketRef.current = new WebSocket(WEBSOCKET_URL);
 
       const onOpenWebSocketMessage = {
@@ -67,7 +55,10 @@ export const useGameSocket = (
       };
 
       webSocketRef.current.addEventListener("open", () => {
-        console.info("WebSocket connection opened");
+        console.info(
+          new Date().toLocaleTimeString(),
+          "WebSocket connection opened"
+        );
         webSocketRef.current?.send(JSON.stringify(onOpenWebSocketMessage));
       });
 
@@ -76,7 +67,11 @@ export const useGameSocket = (
         (webSocketMessageEvent) => {
           const { data } = webSocketMessageEvent;
           if (typeof data !== "string") {
-            console.error("Unexpected data from WebSocket", data);
+            console.error(
+              new Date().toLocaleTimeString(),
+              "Unexpected data from WebSocket",
+              data
+            );
             return;
           }
           try {
@@ -88,13 +83,20 @@ export const useGameSocket = (
               setGameData(dataObject.payload);
             }
           } catch (e) {
-            console.error("Other error from WebSocket", e);
+            console.error(
+              new Date().toLocaleTimeString(),
+              "Other error from WebSocket",
+              e
+            );
           }
         }
       );
 
       webSocketRef.current.addEventListener("close", () => {
-        console.info("WebSocket connection lost");
+        console.info(
+          new Date().toLocaleTimeString(),
+          "WebSocket connection lost"
+        );
         getNewWebSocketRef.current();
       });
     };

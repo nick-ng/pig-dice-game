@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import { GameData, PlayerDetails } from "../../dist-common/game-types";
 import { prevPlayer } from "../../dist-common/utils";
-import { useGameData } from "../hooks/use-game-data";
 import { useGameSocket } from "../hooks/use-game-socket";
 import Loading from "../loading";
 import Lobby from "./lobby";
@@ -18,11 +17,7 @@ const Container = styled.div``;
 
 export default function Game({ playerDetails }: GameProps) {
   const { gameId } = useParams();
-  const { gameData, sendViaWebSocket } = useGameSocket(
-    gameId!,
-    playerDetails,
-    true
-  );
+  const { gameData, sendViaWebSocket } = useGameSocket(gameId!, playerDetails);
 
   if (typeof gameData === "undefined") {
     return <Loading />;
