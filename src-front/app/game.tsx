@@ -2,9 +2,10 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import { GameData, PlayerDetails } from "../../src-common/game-types";
-import { prevPlayer } from "../../src-common/utils";
+import { GameData, PlayerDetails } from "../../dist-common/game-types";
+import { prevPlayer } from "../../dist-common/utils";
 import { useGameData } from "../hooks/use-game-data";
+import { useGameSocket } from "../hooks/use-game-socket";
 import Loading from "../loading";
 import Lobby from "./lobby";
 import GameOver from "./game-over";
@@ -17,7 +18,11 @@ const Container = styled.div``;
 
 export default function Game({ playerDetails }: GameProps) {
   const { gameId } = useParams();
-  const [gameData, setGameData] = useGameData(gameId!, playerDetails, true);
+  const { gameData, sendViaWebSocket } = useGameSocket(
+    gameId!,
+    playerDetails,
+    true
+  );
 
   if (typeof gameData === "undefined") {
     return <Loading />;
@@ -27,13 +32,7 @@ export default function Game({ playerDetails }: GameProps) {
 
   switch (gameState.state) {
     case "lobby":
-      return (
-        <Lobby
-          gameData={gameData}
-          setGameData={setGameData}
-          playerDetails={playerDetails}
-        />
-      );
+      return <Lobby gameData={gameData} playerDetails={playerDetails} />;
     case "over":
       return <GameOver gameData={gameData} playerDetails={playerDetails} />;
 
@@ -74,11 +73,6 @@ export default function Game({ playerDetails }: GameProps) {
         turn
       </div>
       <div>
-        {turnScore > 0 && typeof lastRoll === "number" && (
-          <div>
-            {isActivePlayer ? "You" : activePlayerName} rolled a {lastRoll}
-          </div>
-        )}
         {turnScore === 0 && lastRoll === 1 && (
           <div>
             {isActivePlayer ? prevPlayerName : "You"} rolled a 1 so it's{" "}
@@ -113,10 +107,6 @@ export default function Game({ playerDetails }: GameProps) {
                 message: string;
                 gameData: GameData;
               };
-
-              if (message.toUpperCase() === "OK") {
-                setGameData(gameData);
-              }
             }}
           >
             Roll Dice
@@ -139,14 +129,15 @@ export default function Game({ playerDetails }: GameProps) {
                 message: string;
                 gameData: GameData;
               };
-
-              if (message.toUpperCase() === "OK") {
-                setGameData(gameData);
-              }
             }}
           >
             Bank {turnScore} Points
           </button>
+        </div>
+      )}
+      {turnScore > 0 && typeof lastRoll === "number" && (
+        <div>
+          {isActivePlayer ? "You" : activePlayerName} rolled a {lastRoll}
         </div>
       )}
     </Container>

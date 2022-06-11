@@ -7,9 +7,18 @@ import path from "path";
 import http from "http";
 
 import gameRouter from "./game/game-router";
+import GameWebSocketServer from "./game/game-websocket";
+import { streamHelper } from "./game/game-redis";
 
 const app = express();
 const server = http.createServer(app);
+
+new GameWebSocketServer(
+  {
+    server,
+  },
+  streamHelper
+);
 
 const port = process.env.PORT || 3232;
 app.set("port", port);
@@ -31,6 +40,7 @@ app.use(express.static(path.resolve(process.cwd(), "dist-front")));
 app.use(express.static(path.resolve(process.cwd(), "static")));
 
 if (process.env.NODE_ENV === "dev") {
+  console.info("Dev environment");
   app.use(express.static(path.resolve(process.cwd(), "dev-tools")));
 }
 

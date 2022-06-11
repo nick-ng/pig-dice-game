@@ -11,6 +11,7 @@ Available at https://pux-pig-dice-game.herokuapp.com
 3. `npm start`
 4. Navigate to one of the following:
    - http://localhost:3232/test.html
+   - http://localhost:3232/test-ws.html
 
 ## Forking (on different GitHub account)
 
@@ -23,6 +24,8 @@ Available at https://pux-pig-dice-game.herokuapp.com
 3. `git init`
 4. `git fetch --depth=1 -n https://github.com/nick-ng/pig-dice-game.git`
 5. `git reset --hard $(git commit-tree FETCH_HEAD^{tree} -m "forked https://github.com/nick-ng/pig-dice-game")`
+6. `git push --force`
+7. Change branch permissions etc.
 
 ## Deploying to Heroku
 
@@ -37,16 +40,19 @@ Available at https://pux-pig-dice-game.herokuapp.com
 
 ## ToDos
 
-- ~~Make basic game functions in backend~~
-- ~~Use Redis to store game state~~
-- ~~Make front=end game lobby~~
-- ~~Make front-end game play~~
-- ~~GitHub build action & Heroku host~~
-- Redis streams & Websocket
+- [x] Make basic game functions in backend
+- [x] Use Redis to store game state
+- [x] Make front=end game lobby
+- [x] Make front-end game play
+- [x] GitHub build action & Heroku host
+- [ ] Redis streams & Websocket
   - https://redis.io/docs/manual/data-types/streams/
-- Work on a new game (probably rock, paper, scissors)
+- [ ] Add CORS so people can write their own fron-ends
+- [ ] Work on a new game (probably pig (card game))
 
 ## Notes
+
+### Game State
 
 On the server
 
@@ -110,3 +116,7 @@ Sent to Alice
   }
 }
 ```
+
+### WebSocket API
+
+If you get disconnected, you need to reconnect and re-listen to the game. You'll still be in the game so you don't need to rejoin it..

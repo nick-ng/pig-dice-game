@@ -6,7 +6,6 @@ import { GameData, PlayerDetails } from "../../src-common/game-types";
 
 interface LobbyProps {
   gameData: GameData;
-  setGameData(a: GameData): void;
   playerDetails: PlayerDetails;
 }
 
@@ -26,11 +25,7 @@ const QuiteZone = styled.div`
   display: inline-block;
 `;
 
-export default function Lobby({
-  gameData,
-  setGameData,
-  playerDetails,
-}: LobbyProps) {
+export default function Lobby({ gameData, playerDetails }: LobbyProps) {
   const { players, maxPlayers, host } = gameData;
 
   const canJoinGame =
@@ -81,10 +76,6 @@ export default function Lobby({
               message: string;
               gameData: GameData;
             };
-
-            if (message.toUpperCase() === "OK") {
-              setGameData(newGameData);
-            }
           }}
         >
           Join Game
@@ -109,10 +100,6 @@ export default function Lobby({
               message: string;
               gameData: GameData;
             };
-
-            if (message.toUpperCase() === "OK") {
-              setGameData(newGameData);
-            }
           }}
         >
           Start Game

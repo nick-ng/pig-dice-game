@@ -1,5 +1,5 @@
-import { GameData, Scores, ActionReturn } from "../../src-common/game-types";
-import { GameAction } from "./game-action-types";
+import { GameData, Scores, ActionReturn } from "../../dist-common/game-types";
+import { GameAction } from "../../dist-common/game-action-types";
 import { nextPlayer } from "../../dist-common/utils";
 
 const startGame = (gameData: GameData, action: GameAction): ActionReturn => {
