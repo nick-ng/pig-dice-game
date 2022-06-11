@@ -16,7 +16,7 @@ git add $(ls ./dist-front)
 
 git commit -m "$(date) deploy front-end"
 
-git push origin gh-pages
+git push --force origin gh-pages
 
 git add .
 git commit -m "$(date) throw away"
