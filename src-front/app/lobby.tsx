@@ -4,6 +4,8 @@ import QRCode from "react-qr-code";
 
 import { GameData, PlayerDetails } from "../../src-common/game-types";
 
+declare const API_ORIGIN: string;
+
 interface LobbyProps {
   gameData: GameData;
   playerDetails: PlayerDetails;
@@ -59,7 +61,7 @@ export default function Lobby({ gameData, playerDetails }: LobbyProps) {
       {canJoinGame && (
         <button
           onClick={async () => {
-            const res = await fetch(`/api/game/${gameData.id}`, {
+            await fetch(`${API_ORIGIN}/api/game/${gameData.id}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json;charset=utf-8",
@@ -71,11 +73,6 @@ export default function Lobby({ gameData, playerDetails }: LobbyProps) {
                 playerName: playerDetails.playerName,
               }),
             });
-
-            const { message, gameData: newGameData } = (await res.json()) as {
-              message: string;
-              gameData: GameData;
-            };
           }}
         >
           Join Game
@@ -84,7 +81,7 @@ export default function Lobby({ gameData, playerDetails }: LobbyProps) {
       {isHost && (
         <button
           onClick={async () => {
-            const res = await fetch(`/api/game/${gameData.id}`, {
+            const res = await fetch(`${API_ORIGIN}/api/game/${gameData.id}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json;charset=utf-8",

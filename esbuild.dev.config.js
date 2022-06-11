@@ -8,6 +8,9 @@ require("esbuild")
     format: "esm",
     sourcemap: true,
     outdir: "dist-front/",
+    define: {
+      API_ORIGIN: `"${process.env.API_ORIGIN || ""}"`,
+    },
     plugins: [
       htmlPlugin({
         files: [

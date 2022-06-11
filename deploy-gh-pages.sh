@@ -2,7 +2,7 @@
 
 git checkout main
 git pull
-npm run build-front
+API_ORIGIN=https://pux-pig-dice-game.herokuapp.com npm run build-front
 cp ./dist-front/index.html ./dist-front/404.html
 cp ./static/* ./dist-front
 echo \"pig-dice-game.pux.one\" > ./dist-front/CNAME

@@ -9,6 +9,9 @@ require("esbuild")
     treeShaking: true,
     format: "esm",
     outdir: "dist-front/",
+    define: {
+      API_ORIGIN: `"${process.env.API_ORIGIN || ""}"`,
+    },
     plugins: [
       htmlPlugin({
         files: [

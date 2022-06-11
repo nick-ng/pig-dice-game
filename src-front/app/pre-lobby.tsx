@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { GameData, PlayerDetails } from "../../src-common/game-types";
+import { GameData, PlayerDetails } from "../../dist-common/game-types";
+
+declare const API_ORIGIN: string;
 
 interface PreLobbyProps {
   playerDetails: PlayerDetails;
@@ -30,7 +32,7 @@ export default function PreLobby({ playerDetails }: PreLobbyProps) {
     <Container>
       <HostGameButton
         onClick={async () => {
-          const res = await fetch("/api/game", {
+          const res = await fetch(`${API_ORIGIN}/api/game`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json;charset=utf-8",
