@@ -2,6 +2,8 @@
 
 git checkout main
 git pull
+git branch -D gh-pages
+rm -rf ./dist-front/
 API_ORIGIN=https://pux-pig-dice-game.herokuapp.com npm run build-front
 cp ./dist-front/index.html ./dist-front/404.html
 cp ./static/* ./dist-front
@@ -21,4 +23,4 @@ git commit -m "$(date) throw away"
 
 git checkout main
 
-git diff --name-status main test
+git diff --name-status main gh-pages
