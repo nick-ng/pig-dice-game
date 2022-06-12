@@ -13,19 +13,9 @@ Available at https://pig-dice-game.pux.one or https://pux-pig-dice-game.herokuap
    - http://localhost:3232/test.html
    - http://localhost:3232/test-ws.html
 
-## Forking (on different GitHub account)
+## Forking
 
-1. Click the fork button
-
-## Forking (on same or different GitHub account)
-
-1. Create new empty repository on GitHub (or whatever)
-2. `mkdir <new-repo> && cd <new-repo>`
-3. `git init`
-4. `git fetch --depth=1 -n https://github.com/nick-ng/pig-dice-game.git`
-5. `git reset --hard $(git commit-tree FETCH_HEAD^{tree} -m "forked https://github.com/nick-ng/pig-dice-game")`
-6. `git push --force`
-7. Change branch permissions etc.
+https://github.com/nick-ng/pig-card-game is newer so you should fork that repo instead.
 
 ## Deploying to Heroku
 
